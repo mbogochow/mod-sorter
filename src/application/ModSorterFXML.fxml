@@ -14,7 +14,7 @@
         <VBox prefHeight="88.0" prefWidth="455.0" spacing="5.0" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="7.0">
           <children>
             <Label style="" text="XML Path" />
-            <TextField id="" fx:id="xmlPathField" prefWidth="200.0" text="C:\Users\Michael\Google Drive\Personal\Games\Skyrim\mod-pages\mods.xml" />
+            <TextField id="" fx:id="xmlPathField" prefWidth="200.0" text="" />
             <Button id="" fx:id="runButton" mnemonicParsing="false" text="Run" />
           </children>
         </VBox>
