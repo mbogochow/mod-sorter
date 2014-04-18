@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+
+<BorderPane prefHeight="87.99997792968497" prefWidth="483.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="application.ModSorterController">
+  <center>
+    <AnchorPane prefHeight="202.0" prefWidth="315.0">
+      <children>
+        <VBox prefHeight="88.0" prefWidth="455.0" spacing="5.0" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="7.0">
+          <children>
+            <Label style="" text="XML Path" />
+            <TextField id="" fx:id="xmlPathField" prefWidth="200.0" text="C:\Users\Michael\Google Drive\Personal\Games\Skyrim\mod-pages\mods.xml" />
+            <Button id="" fx:id="runButton" mnemonicParsing="false" text="Run" />
+          </children>
+        </VBox>
+      </children>
+    </AnchorPane>
+  </center>
+</BorderPane>
