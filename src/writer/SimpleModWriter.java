@@ -23,7 +23,12 @@ public class SimpleModWriter implements ModWriter
   }
   
   @Override
-  public void initWrite() throws IOException
+  public void writeHeader() throws IOException
+  {
+  }
+  
+  @Override
+  public void writeFooter() throws IOException
   {
   }
 
@@ -47,4 +52,10 @@ public class SimpleModWriter implements ModWriter
     }
     writer.flush();
   }
-}
+  
+  @Override
+  public void closeFile() throws IOException
+  {
+    writer.close();
+  }
+} /* SimpleModWriter class */
