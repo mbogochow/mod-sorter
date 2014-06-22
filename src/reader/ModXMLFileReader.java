@@ -26,14 +26,14 @@ public class ModXMLFileReader implements ModFileReader
     List<Mod> beforeModList = null;
     Mod currMod = null;
     String tagContent = null;
+    XMLStreamReader reader = null;
     /*
      * Need to do two passes
      */
     try
     {
-      XMLStreamReader reader = factory
-          .createXMLStreamReader(new BufferedInputStream(new FileInputStream(
-              fileName)));
+      reader = factory.createXMLStreamReader(new BufferedInputStream(
+          new FileInputStream(fileName)));
 
       while (reader.hasNext())
       {
@@ -75,14 +75,26 @@ public class ModXMLFileReader implements ModFileReader
       e.printStackTrace();
       return null;
     }
+    finally
+    {
+      try
+      {
+        if (reader != null)
+          reader.close();
+      }
+      catch (XMLStreamException e)
+      {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
 
     List<String> invalidMods = Lists.newArrayList();
 
     try
     {
-      XMLStreamReader reader = factory
-          .createXMLStreamReader(new BufferedInputStream(new FileInputStream(
-              fileName)));
+      reader = factory.createXMLStreamReader(new BufferedInputStream(
+          new FileInputStream(fileName)));
 
       while (reader.hasNext())
       {
@@ -126,6 +138,19 @@ public class ModXMLFileReader implements ModFileReader
     {
       e.printStackTrace();
       return null;
+    }
+    finally
+    {
+      try
+      {
+        if (reader != null)
+          reader.close();
+      }
+      catch (XMLStreamException e)
+      {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
     }
 
     if (!invalidMods.isEmpty())

@@ -39,7 +39,6 @@ public class ModDOMParserFileReader implements ModFileReader
     }
     catch (ParserConfigurationException e1)
     {
-      // TODO Auto-generated catch block
       e1.printStackTrace();
     }
 
@@ -53,7 +52,6 @@ public class ModDOMParserFileReader implements ModFileReader
     }
     catch (SAXException | IOException e)
     {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
 

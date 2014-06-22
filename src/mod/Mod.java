@@ -31,6 +31,13 @@ public class Mod implements Comparable<Mod>
     this.beforeMods = new ArrayList<Mod>();
   }
 
+  /**
+   * Construct a Mod with the given name and list of mods which this mod should 
+   * be sorted before.
+   * 
+   * @param name the name of the mod
+   * @param beforeMods List of mods that this mod should be sorted before
+   */
   public Mod(String name, List<Mod> beforeMods)
   {
     this.name = name;
@@ -119,13 +126,15 @@ public class Mod implements Comparable<Mod>
   @Override
   public boolean equals(Object other)
   {
+    boolean areEqual = false;
+    
     if (other instanceof Mod)
     {
-      Mod mOther = (Mod)other;
-      if (name.equals(mOther.name))
-        return true;
+      if (name.equals(((Mod)other).name))
+        areEqual = true;
     }
-    return false;
+    
+    return areEqual;
   }
 
   @Override

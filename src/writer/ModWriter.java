@@ -7,7 +7,9 @@ import mod.Mod;
 
 public interface ModWriter
 {
-  public void initWrite() throws IOException;
+  public void writeHeader() throws IOException;
+  public void writeFooter() throws IOException;
   public void writeMod(Mod mod) throws IOException;
   public void writeMods(Collection<Mod> mods) throws IOException;
+  public void closeFile() throws IOException;
 }
