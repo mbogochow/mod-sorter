@@ -34,6 +34,7 @@ public final class ModOrganizerModWriter extends SimpleModWriter
   {
     String prefix = mod.isExternal() ? ExternalPrefix :
       mod.isEnabled() ? EnabledPrefix : DisabledPrefix;
+
     writer.write(prefix + mod.getName() + System.lineSeparator());
   }
 }
