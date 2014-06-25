@@ -19,6 +19,7 @@
             <TextField id="" fx:id="modOrganizerField" prefWidth="200.0" text="" />
             <Label style="" text="Profile Name" />
             <TextField id="" fx:id="profileNameField" prefWidth="200.0" text="" />
+            <CheckBox fx:id="openResultCheckBox" mnemonicParsing="false" text="Open Resulting File" />
             <HBox minHeight="18.0" prefHeight="28.0" prefWidth="455.0">
               <children>
                 <Button id="" fx:id="runButton" mnemonicParsing="false" text="Run" />

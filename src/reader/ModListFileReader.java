@@ -19,6 +19,10 @@ import mod.Mod;
  */
 public class ModListFileReader implements ModFileReader
 {
+  private static final char EnabledChar = '+';
+  private static final char DisabledChar = '-';
+  private static final char ExternalChar = '*';
+  
   @Override
   public List<Mod> readFile(String fileName) throws FileNotFoundException
   {
@@ -33,7 +37,17 @@ public class ModListFileReader implements ModFileReader
       for (String line = br.readLine(); line != null; line = br.readLine())
       {
         Mod mod = new Mod(line.substring(1));
-        mod.setEnabled(line.charAt(0) == '+' ? true : false);
+        char firstChar = line.charAt(0);
+        
+        if (firstChar == EnabledChar)
+          mod.setEnabled(true);
+        
+        else if (firstChar == DisabledChar)
+          mod.setEnabled(false);
+        
+        else if (firstChar == ExternalChar)
+          mod.setExternal(true);
+        
         modList.add(mod);
       }
     }

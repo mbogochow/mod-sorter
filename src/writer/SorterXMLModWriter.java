@@ -16,6 +16,7 @@ public class SorterXMLModWriter extends SimpleModWriter
   private static final String RootElementName = "mods";
   private static final String MainElementsName = "mod";
   private static final String EnabledAttrName = "enabled";
+  private static final String ExternalAttrName = "external";
   private static final String NameElementName = "name";
   private static final String BeforeListElementName = "before";
   private static final String BeforeListItemElementName = "modName";
@@ -107,6 +108,7 @@ public class SorterXMLModWriter extends SimpleModWriter
   {
     // Start out with opening the main element tag with its attributes
     indent();
+    modAttributeMap.put(ExternalAttrName, Boolean.toString(mod.isExternal()));
     modAttributeMap.put(EnabledAttrName, Boolean.toString(mod.isEnabled()));
     writeXMLOpenTag(MainElementsName, true, modAttributeMap);
     newLine();

@@ -1,12 +1,12 @@
 package application;
 
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -15,6 +15,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import mod.Mod;
 import mod.ModAlphabeticalComparator;
@@ -47,6 +48,8 @@ public class ModSorterController
   @FXML
   private Button updateButton;
   @FXML
+  private CheckBox openResultCheckBox;
+  @FXML
   private TextField xmlPathField;
   @FXML
   private TextField modOrganizerField;
@@ -74,8 +77,15 @@ public class ModSorterController
   private void backupFile(String fileName) throws IOException
   {
     File from = new File(fileName);
-    File to = new File(fileName
-        + new SimpleDateFormat("yyyyMMddhhmmss'.txt'").format(new Date()));
+
+    String[] fileNameParts = fileName.split("\\.(?=[^\\.]+$)");
+    String namePart = fileNameParts[0];
+    String extension = fileNameParts[1];
+
+    File to = new File(namePart
+        + new SimpleDateFormat("yyyyMMddhhmmss").format(new Date()) + "."
+        + extension);
+
     Files.copy(from, to);
   }
 
@@ -85,6 +95,11 @@ public class ModSorterController
   @FXML
   void initialize()
   {
+    /*
+     * TODO: since the code for each button action is pretty similar should try
+     * and merge some of it together
+     */
+
     /*
      * Set the action for the runButton. The runButton performs a sort according
      * to the specified mods XML file and generates a modlist.xml file which Mod
@@ -134,7 +149,9 @@ public class ModSorterController
 
                 writer.writeMods(Lists.reverse(mods));
                 writer.closeFile();
-                FileUtil.openInEditor(outFile);
+                
+                if (openResultCheckBox.isSelected())
+                  FileUtil.openInEditor(outFile);
               }
               catch (FileNotFoundException e)
               {
@@ -203,8 +220,9 @@ public class ModSorterController
                 writer.writeMods(mods);
                 writer.writeFooter();
                 writer.closeFile();
-                
-                FileUtil.openInEditor(outFile);
+
+                if (openResultCheckBox.isSelected())
+                  FileUtil.openInEditor(outFile);
               }
               catch (FileNotFoundException e)
               {
@@ -271,44 +289,52 @@ public class ModSorterController
                 listMods = modListFileReader.readFile(listFileName);
 
                 backupFile(xmlFileName);
-                
+
                 /** Should move this logic somewhere else **/
                 for (Mod mod : listMods)
                 {
                   int index;
                   if ((index = xmlMods.indexOf(mod)) != -1)
                   { // mod contained in both lists
+//                    System.err.print("Both: " + mod.getName() + ": ");
                     Mod xmlMod = xmlMods.get(index);
+//                    System.err.print("xmlEn: " + xmlMod.isEnabled());
                     xmlMod.setEnabled(mod.isEnabled());
-                    
-                    /** This code adds all of the before mods from the mod from 
-                     * the modslist mod to the xml mod if they are not already 
-                     * there.  Since mods read from a modslist will never have 
-                     * any mods in their before mods list, this code would 
-                     * never do anything but it was written to have a more 
-                     * complete function for combining lists of mods.  It 
-                     * should be uncommented when this section of code is moved 
-                     * to a more appropriate place. **/
-                    // Update the before mods of the destination with any new 
-                    // entries from the source 
-//                    List<Mod> xmlModBeforeMods = xmlMod.getBeforeList();
-//                    List<Mod> modBeforeMods = xmlMod.getBeforeList();
-//                    
-//                    for (Mod beforeMod : modBeforeMods)
-//                    {
-//                      if (!xmlModBeforeMods.contains(beforeMod))
-//                        xmlModBeforeMods.add(beforeMod);
-//                    }
+                    xmlMod.setExternal(mod.isExternal());
+//                    System.err.print(" listEn: " + mod.isEnabled());
+//                    System.err.println(" final: " + xmlMod.isEnabled());
+
+                    /**
+                     * This code adds all of the before mods from the mod from
+                     * the modslist mod to the xml mod if they are not already
+                     * there. Since mods read from a modslist will never have
+                     * any mods in their before mods list, this code would never
+                     * do anything but it was written to have a more complete
+                     * function for combining lists of mods. It should be
+                     * uncommented when this section of code is moved to a more
+                     * appropriate place.
+                     **/
+                    // Update the before mods of the destination with any new
+                    // entries from the source
+                    // List<Mod> xmlModBeforeMods = xmlMod.getBeforeList();
+                    // List<Mod> modBeforeMods = xmlMod.getBeforeList();
+                    //
+                    // for (Mod beforeMod : modBeforeMods)
+                    // {
+                    // if (!xmlModBeforeMods.contains(beforeMod))
+                    // xmlModBeforeMods.add(beforeMod);
+                    // }
                   }
-                  
-                  else // Add the mod if it is not already there
+
+                  else
+                  // Add the mod if it is not already there
                   {
                     System.err.println("Adding new mod: " + mod.getName());
                     xmlMods.add(mod);
                   }
                 }
                 /** End section of logic that should be moved **/
-                
+
                 File outFile = new File(xmlFileName);
                 ModWriter writer = new SorterXMLModWriter(outFile);
                 writer.writeHeader();
@@ -318,7 +344,9 @@ public class ModSorterController
                 writer.writeMods(xmlMods);
                 writer.writeFooter();
                 writer.closeFile();
-                FileUtil.openInEditor(outFile);
+                
+                if (openResultCheckBox.isSelected())
+                  FileUtil.openInEditor(outFile);
               }
               catch (FileNotFoundException e)
               {

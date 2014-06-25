@@ -28,7 +28,9 @@ public class ModXMLFileReader implements ModFileReader
     String tagContent = null;
     XMLStreamReader reader = null;
     /*
-     * Need to do two passes
+     * Need to do two passes in order to add all of the mods and then go 
+     * through their before mods lists on the second pass so that we already 
+     * have a list of all of the valid mods.
      */
     try
     {
@@ -45,9 +47,14 @@ public class ModXMLFileReader implements ModFileReader
           if ("mod".equals(reader.getLocalName()))
           {
             currMod = new Mod();
-            String enabled = reader.getAttributeValue(0);
+            
+            String enabled = reader.getAttributeValue(null, "enabled");//reader.getAttributeValue(0);
             if (enabled != null)
               currMod.setEnabled(Boolean.parseBoolean(enabled));
+            
+            String external = reader.getAttributeValue(null, "external");
+            if (external != null)
+              currMod.setExternal(Boolean.parseBoolean(external));
           }
           break;
 

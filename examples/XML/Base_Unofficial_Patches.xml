@@ -1,0 +1,147 @@
+
+<!-- 
+This is the sorter XML file which would be used to correctly sort the base game 
+with all DLC and the Unofficial Patches.
+
+The actual order after sorting would be as follows:
+	Unofficial Skyrim Patch
+	Dawnguard
+	Unofficial Dawnguard Patch
+	HearthFires
+	Unofficial Hearthfire Patch
+	Dragonborn
+	Unofficial Dragonborn Patch
+	HighResTexturePack01
+	HighResTexturePack02
+	HighResTexturePack03
+	Unofficial High Resolution Patch
+	
+Note that the ALL modName entry places the mod before all other mods except 
+mods which also have ALL in their before list so if more mods are added to the 
+XML without ALL specified then they will be sorted after these mods regardless 
+of their before lists. 
+ -->
+
+<mods>
+  <mod enabled="true" external="true">
+    <name>Dawnguard</name>
+    <before>
+      <modName>ALL</modName>
+      <modName>HighResTexturePack01</modName>
+      <modName>HighResTexturePack02</modName>
+      <modName>HighResTexturePack03</modName>
+      <modName>HearthFires</modName>
+      <modName>Dragonborn</modName>
+      <modName>Unofficial Dawnguard Patch</modName>
+      <modName>Unofficial Hearthfire Patch</modName>
+      <modName>Unofficial Dragonborn Patch</modName>
+      <modName>Unofficial High Resolution Patch</modName>
+    </before>
+  </mod>
+  <mod enabled="true" external="true">
+    <name>Dragonborn</name>
+    <before>
+      <modName>ALL</modName>
+      <modName>HighResTexturePack01</modName>
+      <modName>HighResTexturePack02</modName>
+      <modName>HighResTexturePack03</modName>
+      <modName>Unofficial Dragonborn Patch</modName>
+      <modName>Unofficial High Resolution Patch</modName>
+    </before>
+  </mod>
+  <mod enabled="true" external="true">
+    <name>HearthFires</name>
+    <before>
+      <modName>ALL</modName>
+      <modName>HighResTexturePack01</modName>
+      <modName>HighResTexturePack02</modName>
+      <modName>HighResTexturePack03</modName>
+      <modName>Dragonborn</modName>
+      <modName>Unofficial Hearthfire Patch</modName>
+      <modName>Unofficial Dragonborn Patch</modName>
+      <modName>Unofficial High Resolution Patch</modName>
+    </before>
+  </mod>
+  <mod enabled="true" external="true">
+    <name>HighResTexturePack01</name>
+    <before>
+      <modName>ALL</modName>
+      <modName>HighResTexturePack02</modName>
+      <modName>HighResTexturePack03</modName>
+      <modName>Unofficial High Resolution Patch</modName>
+    </before>
+  </mod>
+  <mod enabled="true" external="true">
+    <name>HighResTexturePack02</name>
+    <before>
+      <modName>ALL</modName>
+      <modName>HighResTexturePack03</modName>
+      <modName>Unofficial High Resolution Patch</modName>
+    </before>
+  </mod>
+  <mod enabled="true" external="true">
+    <name>HighResTexturePack03</name>
+    <before>
+      <modName>ALL</modName>
+      <modName>Unofficial High Resolution Patch</modName>
+    </before>
+  </mod>
+  <mod enabled="true" external="false">
+    <name>Unofficial Dawnguard Patch</name>
+    <before>
+      <modName>ALL</modName>
+      <modName>Unofficial Hearthfire Patch</modName>
+      <modName>Unofficial Dragonborn Patch</modName>
+      <modName>Unofficial High Resolution Patch</modName>
+      <modName>HighResTexturePack01</modName>
+      <modName>HighResTexturePack02</modName>
+      <modName>HighResTexturePack03</modName>
+      <modName>HearthFires</modName>
+      <modName>Dragonborn</modName>
+    </before>
+  </mod>
+  <mod enabled="true" external="false">
+    <name>Unofficial Dragonborn Patch</name>
+    <before>
+      <modName>ALL</modName>
+      <modName>Unofficial High Resolution Patch</modName>
+      <modName>HighResTexturePack01</modName>
+      <modName>HighResTexturePack02</modName>
+      <modName>HighResTexturePack03</modName>
+    </before>
+  </mod>
+  <mod enabled="true" external="false">
+    <name>Unofficial Hearthfire Patch</name>
+    <before>
+      <modName>ALL</modName>
+      <modName>Unofficial Dragonborn Patch</modName>
+      <modName>Unofficial High Resolution Patch</modName>
+      <modName>Dragonborn</modName>
+      <modName>HighResTexturePack01</modName>
+      <modName>HighResTexturePack02</modName>
+      <modName>HighResTexturePack03</modName>
+    </before>
+  </mod>
+  <mod enabled="true" external="false">
+    <name>Unofficial High Resolution Patch</name>
+    <before>
+      <modName>ALL</modName>
+    </before>
+  </mod>
+  <mod enabled="true" external="false">
+    <name>Unofficial Skyrim Patch</name>
+    <before>
+      <modName>ALL</modName>
+      <modName>Unofficial Dragonborn Patch</modName>
+      <modName>Unofficial Hearthfire Patch</modName>
+      <modName>Unofficial Dawnguard Patch</modName>
+      <modName>Unofficial High Resolution Patch</modName>
+      <modName>Dawnguard</modName>
+      <modName>HearthFires</modName>
+      <modName>Dragonborn</modName>
+      <modName>HighResTexturePack01</modName>
+      <modName>HighResTexturePack02</modName>
+      <modName>HighResTexturePack03</modName>
+    </before>
+  </mod>
+</mods>

@@ -11,6 +11,6 @@ public class ModAlphabeticalComparator implements Comparator<Mod>
     String mod1Name = mod1.getName();
     String mod2Name = mod2.getName();
     
-    return mod1Name.compareTo(mod2Name);
+    return mod1Name.compareToIgnoreCase(mod2Name);
   }
 }

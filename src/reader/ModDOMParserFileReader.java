@@ -66,10 +66,17 @@ public class ModDOMParserFileReader implements ModFileReader
       if (node instanceof Element)
       {
         Mod mod = new Mod();
+        
         String enabled = node.getAttributes().getNamedItem("enabled")
             .getNodeValue();
         if (enabled != null)
           mod.setEnabled(Boolean.parseBoolean(enabled));
+        
+        String external = node.getAttributes().getNamedItem("external")
+            .getNodeValue();
+        if (external != null)
+          mod.setExternal(Boolean.parseBoolean(external));
+        
         mod.setPriority(count++);
 
         NodeList childNodes = node.getChildNodes();

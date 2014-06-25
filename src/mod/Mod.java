@@ -14,6 +14,7 @@ public class Mod implements Comparable<Mod>
   private String name;
   private List<Mod> beforeMods;
   private boolean enabled = true;
+  private boolean external = false;
   private int priority;
 
   public static final String AllString = "ALL";
@@ -61,6 +62,16 @@ public class Mod implements Comparable<Mod>
     this.beforeMods = mod.beforeMods;
     this.enabled = mod.enabled;
     this.priority = mod.priority;
+  }
+  
+  public void setExternal(boolean external)
+  {
+    this.external = external;
+  }
+  
+  public boolean isExternal()
+  {
+    return external;
   }
   
   public void setPriority(int priority)
