@@ -7,9 +7,9 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.shape.*?>
 
-<BorderPane minHeight="-Infinity" prefHeight="227.99997792968497" prefWidth="483.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="application.ModSorterController">
+<BorderPane minHeight="-Infinity" prefHeight="401.999977929685" prefWidth="483.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="application.ModSorterController">
   <bottom>
-    <AnchorPane prefHeight="214.0" prefWidth="483.0" BorderPane.alignment="TOP_CENTER">
+    <AnchorPane prefHeight="385.0000999999975" prefWidth="483.0" BorderPane.alignment="TOP_CENTER">
       <children>
         <VBox prefHeight="88.0" prefWidth="455.0" spacing="5.0" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="7.0">
           <children>
@@ -29,6 +29,7 @@
                 <Button id="" fx:id="updateButton" mnemonicParsing="false" text="Update Enabled/Disabled" />
               </children>
             </HBox>
+            <TextArea fx:id="outputTextArea" editable="false" prefHeight="167.0" prefWidth="455.0" wrapText="true" />
           </children>
         </VBox>
       </children>

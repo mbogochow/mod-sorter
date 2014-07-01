@@ -2,6 +2,7 @@ package sorter;
 
 import java.util.List;
 
+import message.MessageLogger;
 import mod.Mod;
 
 import com.google.common.collect.Lists;
@@ -46,7 +47,7 @@ public class ModChecker
       boolean res = doChecking(mod, checkednMods);
       if (res)
       {
-        System.err.println("LOOP TRACE: " + mod.getName());
+        MessageLogger.error("LOOP TRACE: " + mod.getName());
       }
       result |= res;
     }

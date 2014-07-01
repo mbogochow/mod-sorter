@@ -4,14 +4,13 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import message.MessageLogger;
 import mod.Mod;
 
 import com.google.common.collect.Lists;
 
 public class ModSorter
 {
-  
-
   public static List<Mod> sort(List<Mod> modList)
   {
     List<Mod> sortedList = Lists.newLinkedList(modList);
@@ -37,7 +36,7 @@ public class ModSorter
         
         if (checker.check(bMod))
         {
-          System.err.println(mod.getName() + " conflicts with "
+          MessageLogger.error(mod.getName() + " conflicts with "
               + bMod.getName());
           return null;
         }
@@ -46,7 +45,6 @@ public class ModSorter
       // Check if the mod should go before all mods
       if (before.get(0).getName().equals(Mod.AllString))
       {
-//        System.err.println(mod.getName() + " is an ALL mod");
         sortedList.remove(mod);
         iter.remove();
         allList.add(mod);

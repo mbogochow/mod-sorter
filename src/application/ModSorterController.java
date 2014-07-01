@@ -1,6 +1,5 @@
 package application;
 
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -9,6 +8,8 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.ResourceBundle;
 
 import javafx.event.ActionEvent;
@@ -16,7 +17,11 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import message.Message;
+import message.MessageBuffer;
+import message.MessageLogger;
 import mod.Mod;
 import mod.ModAlphabeticalComparator;
 import reader.ModFileReader;
@@ -31,7 +36,7 @@ import writer.SorterXMLModWriter;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 
-public class ModSorterController
+public class ModSorterController implements Observer
 {
   private static final String ModOrganizerModListFileName = "modlist.txt";
   private static final String ModSorterDefaultXMLFileName = "mods.xml";
@@ -55,6 +60,8 @@ public class ModSorterController
   private TextField modOrganizerField;
   @FXML
   private TextField profileNameField;
+  @FXML
+  private TextArea outputTextArea;
 
   private String getProfileDir()
   {
@@ -95,6 +102,7 @@ public class ModSorterController
   @FXML
   void initialize()
   {
+    MessageLogger.addObserver(this);
     /*
      * TODO: since the code for each button action is pretty similar should try
      * and merge some of it together
@@ -142,20 +150,30 @@ public class ModSorterController
 
                 mods = fileReader.readFile(xmlPathField.getText());
 
-                File outFile = new File(outFileName);
-                ModWriter writer = new ModOrganizerModWriter(outFile);
-                writer.writeHeader();
                 mods = ModSorter.sort(mods);
 
-                writer.writeMods(Lists.reverse(mods));
-                writer.closeFile();
-                
-                if (openResultCheckBox.isSelected())
-                  FileUtil.openInEditor(outFile);
+                if (mods != null)
+                {
+                  File outFile = new File(outFileName);
+                  ModWriter writer = new ModOrganizerModWriter(outFile);
+
+                  writer.writeHeader();
+                  writer.writeMods(Lists.reverse(mods));
+                  writer.closeFile();
+
+                  if (openResultCheckBox.isSelected())
+                    FileUtil.openInEditor(outFile);
+
+                  MessageLogger.log("Successfully sorted.  Output written to "
+                      + outFileName);
+                }
+
+                else
+                  MessageLogger.error("Failed to sort mods");
               }
               catch (FileNotFoundException e)
               {
-                System.err.println("Could not find file " + e.getMessage());
+                MessageLogger.error("Could not find file " + e.getMessage());
                 e.printStackTrace();
               }
               catch (IOException e)
@@ -171,7 +189,7 @@ public class ModSorterController
     }
 
     else
-      System.err.println("runButton not defined");
+      MessageLogger.bug("runButton not defined");
 
     /*
      * Set the action for the generateButton. The generateButton creates a
@@ -199,7 +217,7 @@ public class ModSorterController
 
                 if (profileDir.isEmpty())
                 { // temp
-                  System.err.println("Could not read "
+                  MessageLogger.error("Could not read "
                       + ModOrganizerModListFileName);
                   return;
                 }
@@ -211,22 +229,27 @@ public class ModSorterController
 
                 mods = fileReader.readFile(inputFileName);
 
+                // Sort the XML entries alphabetically
+                Collections.sort(mods, new ModAlphabeticalComparator());
+
                 File outFile = new File(ModSorterDefaultXMLFileName);
                 ModWriter writer = new SorterXMLModWriter(outFile);
-                writer.writeHeader();
-                mods = ModSorter.sort(mods);
 
-                Collections.sort(mods, new ModAlphabeticalComparator());
+                writer.writeHeader();
                 writer.writeMods(mods);
                 writer.writeFooter();
                 writer.closeFile();
 
                 if (openResultCheckBox.isSelected())
                   FileUtil.openInEditor(outFile);
+
+                MessageLogger.log("Successfully generated XML file from "
+                    + inputFileName + ". Output written to "
+                    + ModSorterDefaultXMLFileName);
               }
               catch (FileNotFoundException e)
               {
-                System.err.println("Could not find file " + e.getMessage());
+                MessageLogger.error("Could not find file " + e.getMessage());
                 e.printStackTrace();
               }
               catch (IOException e)
@@ -242,7 +265,7 @@ public class ModSorterController
     }
 
     else
-      System.err.println("generateButton not defined");
+      MessageLogger.bug("generateButton not defined");
 
     /*
      * Set the action for the updateButton. The updateButton updates enabled
@@ -275,7 +298,7 @@ public class ModSorterController
 
                 if (profileDir.isEmpty())
                 { // temp
-                  System.err.println("Could not read "
+                  MessageLogger.error("Could not read "
                       + ModOrganizerModListFileName);
                   return;
                 }
@@ -296,13 +319,29 @@ public class ModSorterController
                   int index;
                   if ((index = xmlMods.indexOf(mod)) != -1)
                   { // mod contained in both lists
-//                    System.err.print("Both: " + mod.getName() + ": ");
                     Mod xmlMod = xmlMods.get(index);
-//                    System.err.print("xmlEn: " + xmlMod.isEnabled());
-                    xmlMod.setEnabled(mod.isEnabled());
-                    xmlMod.setExternal(mod.isExternal());
-//                    System.err.print(" listEn: " + mod.isEnabled());
-//                    System.err.println(" final: " + xmlMod.isEnabled());
+
+                    boolean xmlEnabled = xmlMod.isEnabled();
+                    boolean listEnabled = mod.isEnabled();
+
+                    if (xmlEnabled != listEnabled)
+                    {
+                      MessageLogger.log("Switching " + mod.getName()
+                          + " Enabled state from " + xmlEnabled + " to "
+                          + listEnabled);
+                      xmlMod.setEnabled(mod.isEnabled());
+                    }
+
+                    boolean xmlExternal = xmlMod.isExternal();
+                    boolean listExternal = mod.isExternal();
+
+                    if (xmlExternal != listExternal)
+                    {
+                      MessageLogger.log("Switching " + mod.getName()
+                          + " External state from " + xmlExternal + " to "
+                          + listExternal);
+                      xmlMod.setExternal(mod.isExternal());
+                    }
 
                     /**
                      * This code adds all of the before mods from the mod from
@@ -329,28 +368,34 @@ public class ModSorterController
                   else
                   // Add the mod if it is not already there
                   {
-                    System.err.println("Adding new mod: " + mod.getName());
+                    MessageLogger.log("Adding new mod: " + mod.getName());
                     xmlMods.add(mod);
                   }
                 }
                 /** End section of logic that should be moved **/
 
+                // xmlMods = ModSorter.sort(xmlMods);
+
+                // Sort the XML entries alphabetically in case any were added
+                Collections.sort(xmlMods, new ModAlphabeticalComparator());
+
                 File outFile = new File(xmlFileName);
                 ModWriter writer = new SorterXMLModWriter(outFile);
-                writer.writeHeader();
-                xmlMods = ModSorter.sort(xmlMods);
 
-                Collections.sort(xmlMods, new ModAlphabeticalComparator());
+                writer.writeHeader();
                 writer.writeMods(xmlMods);
                 writer.writeFooter();
                 writer.closeFile();
-                
+
                 if (openResultCheckBox.isSelected())
                   FileUtil.openInEditor(outFile);
+
+                MessageLogger.log("Successfully updated " + xmlFileName
+                    + " with the data from " + listFileName);
               }
               catch (FileNotFoundException e)
               {
-                System.err.println("Could not find file " + e.getMessage());
+                MessageLogger.error("Could not find file " + e.getMessage());
                 e.printStackTrace();
               }
               catch (IOException e)
@@ -366,6 +411,68 @@ public class ModSorterController
     }
 
     else
-      System.err.println("updateButton not defined");
+      MessageLogger.bug("updateButton not defined");
   } /* initialize */
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public void update(Observable arg0, Object arg1)
+  {
+    if (arg0 instanceof MessageBuffer)
+    {
+      writeMessageList(((MessageBuffer)arg0).getMessages());
+    }
+
+    else if (arg1 instanceof List<?>)
+    {
+      List<?> list = (List<?>)arg1;
+
+      // Check if the list has Messages. This is the wrong way of doing this
+      // since it could be a list of Objects.
+      if (list.size() > 0 && list.get(0) instanceof Message)
+      {
+        writeMessageList((List<Message>)list);
+      }
+
+      else
+        throw new IllegalArgumentException();
+    }
+
+    else if (arg1 instanceof Message)
+    {
+      writeMessage((Message)arg1);
+    }
+
+    else
+    {
+      throw new IllegalArgumentException();
+    }
+  }
+
+  private void writeMessageList(List<Message> msgBuf)
+  {
+    for (Message msg : msgBuf)
+    {
+      writeMessage(msg);
+    }
+  }
+
+  private void writeMessage(Message msg)
+  {
+    switch (msg.messageType())
+    {
+    case LOG:
+      outputTextArea.appendText("LOG: " + msg.message()
+          + System.lineSeparator());
+      break;
+    case ERR:
+      outputTextArea.appendText("ERR: " + msg.message()
+          + System.lineSeparator());
+      break;
+    case BUG:
+      outputTextArea.appendText("BUG: " + msg.message()
+          + System.lineSeparator());
+      break;
+    }
+  }
 }

@@ -10,6 +10,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import message.MessageLogger;
 import mod.MasterModList;
 import mod.Mod;
 
@@ -67,7 +68,7 @@ public class ModXMLFileReader implements ModFileReader
           {
           case "mod":
             if (!modList.add(currMod))
-              System.err.println("Could not add mod " + currMod.getName());
+              MessageLogger.error("Could not add mod " + currMod.getName());
             break;
           case "name":
             currMod.setName(tagContent);
@@ -162,11 +163,15 @@ public class ModXMLFileReader implements ModFileReader
 
     if (!invalidMods.isEmpty())
     {
-      String invalidModMsg = "The following are invalid mods"
-          + System.lineSeparator();
+      StringBuilder invalidModMsg = new StringBuilder();
+      
+      invalidModMsg.append("The following are invalid mods"
+          + System.lineSeparator());
+      
       for (String msg : invalidMods)
-        invalidModMsg += msg + System.lineSeparator();
-      System.err.println(invalidModMsg);
+        invalidModMsg.append(msg + System.lineSeparator());
+      
+      MessageLogger.error(invalidModMsg.toString());
     }
 
     return modList.getList();
