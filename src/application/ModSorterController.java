@@ -12,6 +12,7 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -138,15 +139,10 @@ public class ModSorterController implements Observer
                 String outFileName;
 
                 if (profileDir.isEmpty())
-                {
                   outFileName = ModOrganizerModListFileName;
-                }
 
                 else
-                {
                   outFileName = profileDir + ModOrganizerModListFileName;
-                  backupFile(outFileName);
-                }
 
                 mods = fileReader.readFile(xmlPathField.getText());
 
@@ -154,6 +150,9 @@ public class ModSorterController implements Observer
 
                 if (mods != null)
                 {
+                  // Backup the file before overwriting it
+                  backupFile(outFileName);
+
                   File outFile = new File(outFileName);
                   ModWriter writer = new ModOrganizerModWriter(outFile);
 
@@ -311,9 +310,8 @@ public class ModSorterController implements Observer
                 xmlMods = modXMLFileReader.readFile(xmlFileName);
                 listMods = modListFileReader.readFile(listFileName);
 
-                backupFile(xmlFileName);
-
                 /** Should move this logic somewhere else **/
+                // Update the xmlMods with date from listMods
                 for (Mod mod : listMods)
                 {
                   int index;
@@ -378,6 +376,9 @@ public class ModSorterController implements Observer
 
                 // Sort the XML entries alphabetically in case any were added
                 Collections.sort(xmlMods, new ModAlphabeticalComparator());
+
+                // Backup the old file before overwriting it
+                backupFile(xmlFileName);
 
                 File outFile = new File(xmlFileName);
                 ModWriter writer = new SorterXMLModWriter(outFile);
@@ -449,7 +450,7 @@ public class ModSorterController implements Observer
     }
   }
 
-  private void writeMessageList(List<Message> msgBuf)
+  private void writeMessageList(final List<Message> msgBuf)
   {
     for (Message msg : msgBuf)
     {
@@ -457,22 +458,37 @@ public class ModSorterController implements Observer
     }
   }
 
-  private void writeMessage(Message msg)
+  private void writeMessage(final Message msg)
   {
-    switch (msg.messageType())
+    if (msg != null)
     {
-    case LOG:
-      outputTextArea.appendText("LOG: " + msg.message()
-          + System.lineSeparator());
-      break;
-    case ERR:
-      outputTextArea.appendText("ERR: " + msg.message()
-          + System.lineSeparator());
-      break;
-    case BUG:
-      outputTextArea.appendText("BUG: " + msg.message()
-          + System.lineSeparator());
-      break;
+      switch (msg.messageType())
+      {
+      case LOG:
+        appendMessageText("LOG: " + msg.message());
+        break;
+      case ERR:
+        appendMessageText("ERR: " + msg.message());
+        break;
+      case BUG:
+        appendMessageText("BUG: " + msg.message());
+        break;
+      }      
     }
+  }
+  
+  private void appendMessageText(final String msg)
+  {
+    if (outputTextArea != null)
+    {
+      Platform.runLater(new Runnable() {
+        @Override public void run() {
+          outputTextArea.appendText(msg + System.lineSeparator());     
+        }
+      });  
+    }
+    
+    else
+      System.err.println("outputTextArea is null");
   }
 }

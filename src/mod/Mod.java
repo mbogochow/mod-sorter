@@ -9,7 +9,7 @@ import java.util.List;
  * @version 0.0.1
  * @since March 2014
  */
-public class Mod implements Comparable<Mod>
+public class Mod // implements Comparable<Mod>
 {
   private String name;
   private List<Mod> beforeMods;
@@ -33,11 +33,13 @@ public class Mod implements Comparable<Mod>
   }
 
   /**
-   * Construct a Mod with the given name and list of mods which this mod should 
+   * Construct a Mod with the given name and list of mods which this mod should
    * be sorted before.
    * 
-   * @param name the name of the mod
-   * @param beforeMods List of mods that this mod should be sorted before
+   * @param name
+   *          the name of the mod
+   * @param beforeMods
+   *          List of mods that this mod should be sorted before
    */
   public Mod(String name, List<Mod> beforeMods)
   {
@@ -55,7 +57,7 @@ public class Mod implements Comparable<Mod>
   {
     copy(mod);
   }
-  
+
   public void copy(Mod mod)
   {
     this.name = mod.name;
@@ -63,22 +65,22 @@ public class Mod implements Comparable<Mod>
     this.enabled = mod.enabled;
     this.priority = mod.priority;
   }
-  
+
   public void setExternal(boolean external)
   {
     this.external = external;
   }
-  
+
   public boolean isExternal()
   {
     return external;
   }
-  
+
   public void setPriority(int priority)
   {
     this.priority = priority;
   }
-  
+
   public int getPriority()
   {
     return priority;
@@ -138,13 +140,13 @@ public class Mod implements Comparable<Mod>
   public boolean equals(Object other)
   {
     boolean areEqual = false;
-    
+
     if (other instanceof Mod)
     {
       if (name.equals(((Mod)other).name))
         areEqual = true;
     }
-    
+
     return areEqual;
   }
 
@@ -154,10 +156,16 @@ public class Mod implements Comparable<Mod>
     return name.hashCode();
   }
 
-  @Override
+  /**
+   * WARNING: This method does not work for sorting because the final condition
+   * makes the comparison indeterminate in relation to other mods.
+   * 
+   * i.e. A < B < C but C may contain A in its before mods. This would break a
+   * sort with these three mods.
+   */
+  @Deprecated
   public int compareTo(Mod otherMod)
   {
-    // System.err.println("Comparing");
     if (this.equals(otherMod))
       return 0;
 
@@ -169,6 +177,8 @@ public class Mod implements Comparable<Mod>
 
     if (!ourAll && otherAll)
       return 1;
+
+    // Must be that either both are ALL mods or both are not ALL mods
 
     boolean oursBeforeTheirs = beforeMods.contains(otherMod);
     boolean theirsBeforeOurs = otherMod.beforeMods.contains(this);
@@ -182,7 +192,7 @@ public class Mod implements Comparable<Mod>
     if (theirsBeforeOurs)
       return 1;
 
-    // No relation to each other. Just place theirs after this one.
-    return -1; // 0
+    // No relation to each other. Sort based on name.
+    return this.name.compareTo(otherMod.name);
   }
 }
