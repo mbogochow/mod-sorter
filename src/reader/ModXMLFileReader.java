@@ -67,6 +67,8 @@ public class ModXMLFileReader implements ModFileReader
           switch (reader.getLocalName())
           {
           case "mod":
+            if (modList.contains(currMod))
+              MessageLogger.error("Duplicate entries found for " + currMod.getName() + ". Sorting results may be unexpected.");
             if (!modList.add(currMod))
               MessageLogger.error("Could not add mod " + currMod.getName());
             break;

@@ -61,7 +61,6 @@ public class MasterModList
    */
   public boolean add(Mod mod)
   {
-    
     if (modList.add(mod))
       return true;
     return update(mod.getName(), mod);
