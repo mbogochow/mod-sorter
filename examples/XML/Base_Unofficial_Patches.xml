@@ -1,6 +1,6 @@
 
 <!-- 
-This is the sorter XML file which would be used to correctly sort the base game 
+This is the sorter XML file which would be used to correctly sort the base game
 with all DLC and the Unofficial Patches.
 
 The actual order after sorting would be as follows:
@@ -16,7 +16,7 @@ The actual order after sorting would be as follows:
 	HighResTexturePack03
 	Unofficial High Resolution Patch
 	
-Note that the ALL modName entry places the mod before all other mods except 
+Note that the ALL modName entry places the mod before all other mods except
 mods which also have ALL in their before list so if more mods are added to the 
 XML without ALL specified then they will be sorted after these mods regardless 
 of their before lists. 
