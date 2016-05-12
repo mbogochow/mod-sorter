@@ -13,26 +13,26 @@ public class BeforeModWriter extends SimpleModWriter {
     protected int printLevel = 0;
     protected final int maxLevel = 5;
 
-    public BeforeModWriter(String filePath) throws IOException {
+    public BeforeModWriter(final String filePath) throws IOException {
         super(filePath);
     }
 
-    public BeforeModWriter(File file) throws IOException {
+    public BeforeModWriter(final File file) throws IOException {
         super(file);
     }
 
     @Override
-    public void writeMod(Mod mod) throws IOException {
+    public void writeMod(final Mod mod) throws IOException {
         if (mod == null)
             return;
-        List<Mod> writtenMods = Lists.newArrayList();
+        final List<Mod> writtenMods = Lists.newArrayList();
         doWriting(mod, writtenMods);
         printLevel += 1;
         writeBeforeMods(mod, writtenMods);
         printLevel -= 1;
     }
 
-    protected boolean doWriting(Mod mod, List<Mod> writtenMods) throws IOException {
+    protected boolean doWriting(final Mod mod, final List<Mod> writtenMods) throws IOException {
         if (mod == null)
             return false;
         indent();
@@ -43,12 +43,12 @@ public class BeforeModWriter extends SimpleModWriter {
         return true;
     }
 
-    protected void writeBeforeMods(Mod mod, List<Mod> writtenMods) throws IOException {
+    protected void writeBeforeMods(final Mod mod, final List<Mod> writtenMods) throws IOException {
         if (mod == null || printLevel > maxLevel)
             return;
-        List<Mod> beforeList = mod.getBeforeList();
+        final List<Mod> beforeList = mod.getBeforeList();
         indentation += increment;
-        for (Mod bMod : beforeList) {
+        for (final Mod bMod : beforeList) {
             if (doWriting(bMod, writtenMods))
                 writeBeforeMods(bMod, writtenMods);
         }

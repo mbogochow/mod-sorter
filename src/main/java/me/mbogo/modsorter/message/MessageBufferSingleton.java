@@ -3,17 +3,17 @@ package me.mbogo.modsorter.message;
 import java.util.Observer;
 
 class MessageBufferSingleton {
-    private static MessageBuffer messageBuffer = new MessageBuffer();
+    private static final MessageBuffer messageBuffer = new MessageBuffer();
 
     static {
 
     }
 
-    public static void writeMessage(Message msg) {
+    public static void writeMessage(final Message msg) {
         messageBuffer.writeMessage(msg);
     }
 
-    public static void addObserver(Observer o) {
+    public static void addObserver(final Observer o) {
         messageBuffer.addObserver(o);
     }
 
@@ -21,7 +21,7 @@ class MessageBufferSingleton {
         return messageBuffer.countObservers();
     }
 
-    public static void deleteObserver(Observer o) {
+    public static void deleteObserver(final Observer o) {
         messageBuffer.deleteObserver(o);
     }
 
@@ -37,7 +37,7 @@ class MessageBufferSingleton {
         messageBuffer.notifyObservers();
     }
 
-    public static void notifyObservers(Object arg) {
+    public static void notifyObservers(final Object arg) {
         messageBuffer.notifyObservers(arg);
     }
 }

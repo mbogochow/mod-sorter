@@ -1,21 +1,22 @@
 package me.mbogo.modsorter.sorter;
 
-import com.google.common.collect.Lists;
 import me.mbogo.modsorter.message.MessageLogger;
 import me.mbogo.modsorter.mod.Mod;
 
+import javax.annotation.Nonnull;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 public class ModSorter {
-    private static List<Mod> doSorting(List<Mod> modList, boolean checkAll) {
-        List<Mod> sortedList = Lists.newLinkedList(modList);
-        List<Mod> allList = Lists.newLinkedList();
+    private static List<Mod> doSorting(@Nonnull final List<Mod> modList, final boolean checkAll) {
+        final List<Mod> sortedList = new LinkedList<>(modList);
+        final List<Mod> allList = new LinkedList<>();
 
         // Iterate through each mod in the list
         for (Iterator<Mod> iter = modList.iterator(); iter.hasNext(); ) {
-            Mod mod = iter.next();
-            List<Mod> before = mod.getBeforeList();
+            final Mod mod = iter.next();
+            final List<Mod> before = mod.getBeforeList();
             boolean noSort = false;
 
             // If the mod does not have any other mods in its before list then it
@@ -37,8 +38,8 @@ public class ModSorter {
                 }
             } else {
                 // Check whether any of the mods conflict before sorting
-                ModChecker checker = new ModChecker(mod);
-                for (Mod bMod : before) {
+                final ModChecker checker = new ModChecker(mod);
+                for (final Mod bMod : before) {
                     if (bMod != null && checker.check(bMod)) {
                         MessageLogger.error(mod.getName() + " conflicts with "
                                 + bMod.getName());
@@ -75,7 +76,7 @@ public class ModSorter {
         return sortedList;
     } /* doSorting */
 
-    public static List<Mod> sort(List<Mod> modList) {
+    public static List<Mod> sort(final List<Mod> modList) {
         return doSorting(modList, true);
     } /* sort */
 } /* ModSorter class */

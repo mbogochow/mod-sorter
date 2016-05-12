@@ -51,8 +51,8 @@ public class ModSorterController implements Observer {
     private TextArea outputTextArea;
 
     private String getProfileDir() {
-        String modOrganizerFieldText = modOrganizerField.getText();
-        String profileName = profileNameField.getText();
+        final String modOrganizerFieldText = modOrganizerField.getText();
+        final String profileName = profileNameField.getText();
         String profileDir = "";
 
         if (!modOrganizerFieldText.isEmpty()) {
@@ -65,14 +65,14 @@ public class ModSorterController implements Observer {
         return profileDir;
     }
 
-    private void backupFile(String fileName) throws IOException {
-        File from = new File(fileName);
+    private void backupFile(final String fileName) throws IOException {
+        final File from = new File(fileName);
 
-        String[] fileNameParts = fileName.split("\\.(?=[^\\.]+$)");
-        String namePart = fileNameParts[0];
-        String extension = fileNameParts[1];
+        final String[] fileNameParts = fileName.split("\\.(?=[^\\.]+$)");
+        final String namePart = fileNameParts[0];
+        final String extension = fileNameParts[1];
 
-        File to = new File(namePart
+        final File to = new File(namePart
                 + new SimpleDateFormat("yyyyMMddhhmmss").format(new Date()) + "."
                 + extension);
 
@@ -94,7 +94,7 @@ public class ModSorterController implements Observer {
      * Set the action for the runButton. The runButton performs a sort according
      * to the specified mods XML file and generates a modlist.xml file which Mod
      * Organizer can use.
-     * 
+     *
      * If the Mod Organizer path and profile name are provided then the result
      * file will overwrite the old the modlist.txt for that profile (after
      * creating a backup). If they are not provided then a new modlist.txt is
@@ -102,29 +102,35 @@ public class ModSorterController implements Observer {
      */
         if (runButton != null) {
             runButton.setOnAction(event -> {
-                Thread thread = new Thread(() -> {
-                    ModFileReader fileReader = new ModXMLFileReader();
+                final Thread thread = new Thread(() -> {
+                    if (xmlPathField.getText().isEmpty()) {
+                        MessageLogger.error("No XML file provided!");
+                        return;
+                    } else if (!new File(xmlPathField.getText()).exists()) {
+                        MessageLogger.error("File '" + xmlPathField.getText() + "' does not exist!");
+                        return;
+                    }
+
+                    final ModFileReader fileReader = new ModXMLFileReader();
                     List<Mod> mods;
                     try {
-                        String profileDir = getProfileDir();
-                        String outFileName;
+                        final String profileDir = getProfileDir();
+                        final String outFileName;
 
                         if (profileDir.isEmpty())
                             outFileName = ModOrganizerModListFileName;
-
                         else
                             outFileName = profileDir + ModOrganizerModListFileName;
 
                         mods = fileReader.readFile(xmlPathField.getText());
-
                         mods = ModSorter.sort(mods);
 
                         if (mods != null) {
                             // Backup the file before overwriting it
                             backupFile(outFileName);
 
-                            File outFile = new File(outFileName);
-                            ModWriter writer = new ModOrganizerModWriter(outFile);
+                            final File outFile = new File(outFileName);
+                            final ModWriter writer = new ModOrganizerModWriter(outFile);
 
                             writer.writeHeader();
                             writer.writeMods(Lists.reverse(mods));
@@ -137,10 +143,10 @@ public class ModSorterController implements Observer {
                                     + outFileName);
                         } else
                             MessageLogger.error("Failed to sort mods");
-                    } catch (FileNotFoundException e) {
+                    } catch (final FileNotFoundException e) {
                         MessageLogger.error("Could not find file " + e.getMessage());
                         e.printStackTrace();
-                    } catch (IOException e) {
+                    } catch (final IOException e) {
                         e.printStackTrace();
                     }
                 }); /* thread */
@@ -157,12 +163,12 @@ public class ModSorterController implements Observer {
      */
         if (generateButton != null) {
             generateButton.setOnAction(event -> {
-                Thread thread = new Thread(() -> {
-                    ModFileReader fileReader = new ModListFileReader();
-                    List<Mod> mods;
+                final Thread thread = new Thread(() -> {
+                    final ModFileReader fileReader = new ModListFileReader();
+                    final List<Mod> mods;
                     try {
-                        String profileDir = getProfileDir();
-                        String inputFileName;
+                        final String profileDir = getProfileDir();
+                        final String inputFileName;
 
                         if (profileDir.isEmpty()) { // temp
                             MessageLogger.error("Could not read "
@@ -177,8 +183,8 @@ public class ModSorterController implements Observer {
                         // Sort the XML entries alphabetically
                         Collections.sort(mods, new ModAlphabeticalComparator());
 
-                        File outFile = new File(ModSorterDefaultXMLFileName);
-                        ModWriter writer = new SorterXMLModWriter(outFile);
+                        final File outFile = new File(ModSorterDefaultXMLFileName);
+                        final ModWriter writer = new SorterXMLModWriter(outFile);
 
                         writer.writeHeader();
                         writer.writeMods(mods);
@@ -191,10 +197,10 @@ public class ModSorterController implements Observer {
                         MessageLogger.log("Successfully generated XML file from "
                                 + inputFileName + ". Output written to "
                                 + ModSorterDefaultXMLFileName);
-                    } catch (FileNotFoundException e) {
+                    } catch (final FileNotFoundException e) {
                         MessageLogger.error("Could not find file " + e.getMessage());
                         e.printStackTrace();
-                    } catch (IOException e) {
+                    } catch (final IOException e) {
                         e.printStackTrace();
                     }
                 }); /* thread */
@@ -206,22 +212,22 @@ public class ModSorterController implements Observer {
 
     /*
      * Set the action for the updateButton. The updateButton updates enabled
-     * attributes for each me.mbogo.modsorter.mod in the specified mods XML file based on the
+     * attributes for each mod in the specified mods XML file based on the
      * modlist.txt file for the specified profile. It will also add in mods
      * contained in the modlist.txt which were not previously located in the
      * mods XML file.
      */
         if (updateButton != null) {
             updateButton.setOnAction(event -> {
-                Thread thread = new Thread(() -> {
-                    ModFileReader modXMLFileReader = new ModXMLFileReader();
-                    ModFileReader modListFileReader = new ModListFileReader();
-                    List<Mod> xmlMods;
-                    List<Mod> listMods;
+                final Thread thread = new Thread(() -> {
+                    final ModFileReader modXMLFileReader = new ModXMLFileReader();
+                    final ModFileReader modListFileReader = new ModListFileReader();
+                    final List<Mod> xmlMods;
+                    final List<Mod> listMods;
                     try {
-                        String profileDir = getProfileDir();
-                        String xmlFileName = xmlPathField.getText();
-                        String listFileName;
+                        final String profileDir = getProfileDir();
+                        final String xmlFileName = xmlPathField.getText();
+                        final String listFileName;
 
                         if (profileDir.isEmpty()) { // temp
                             MessageLogger.error("Could not read "
@@ -237,12 +243,12 @@ public class ModSorterController implements Observer {
                         /** Should move this logic somewhere else **/
                         // Update the xmlMods with date from listMods
                         for (Mod mod : listMods) {
-                            int index;
-                            if ((index = xmlMods.indexOf(mod)) != -1) { // me.mbogo.modsorter.mod contained in both lists
+                            final int index;
+                            if ((index = xmlMods.indexOf(mod)) != -1) { // mod contained in both lists
                                 Mod xmlMod = xmlMods.get(index);
 
-                                boolean xmlEnabled = xmlMod.isEnabled();
-                                boolean listEnabled = mod.isEnabled();
+                                final boolean xmlEnabled = xmlMod.isEnabled();
+                                final boolean listEnabled = mod.isEnabled();
 
                                 if (xmlEnabled != listEnabled) {
                                     MessageLogger.log("Switching " + mod.getName()
@@ -251,8 +257,8 @@ public class ModSorterController implements Observer {
                                     xmlMod.setEnabled(mod.isEnabled());
                                 }
 
-                                boolean xmlExternal = xmlMod.isExternal();
-                                boolean listExternal = mod.isExternal();
+                                final boolean xmlExternal = xmlMod.isExternal();
+                                final boolean listExternal = mod.isExternal();
 
                                 if (xmlExternal != listExternal) {
                                     MessageLogger.log("Switching " + mod.getName()
@@ -262,8 +268,8 @@ public class ModSorterController implements Observer {
                                 }
 
                                 /**
-                                 * This code adds all of the before mods from the me.mbogo.modsorter.mod from
-                                 * the modslist me.mbogo.modsorter.mod to the xml me.mbogo.modsorter.mod if they are not already
+                                 * This code adds all of the before mods from the mod from
+                                 * the modslist mod to the xml mod if they are not already
                                  * there. Since mods read from a modslist will never have
                                  * any mods in their before mods list, this code would never
                                  * do anything but it was written to have a more complete
@@ -282,9 +288,9 @@ public class ModSorterController implements Observer {
                                 // xmlModBeforeMods.add(beforeMod);
                                 // }
                             } else
-                            // Add the me.mbogo.modsorter.mod if it is not already there
+                            // Add the mod if it is not already there
                             {
-                                MessageLogger.log("Adding new me.mbogo.modsorter.mod: " + mod.getName());
+                                MessageLogger.log("Adding new mod: " + mod.getName());
                                 xmlMods.add(mod);
                             }
                         }
@@ -298,8 +304,8 @@ public class ModSorterController implements Observer {
                         // Backup the old file before overwriting it
                         backupFile(xmlFileName);
 
-                        File outFile = new File(xmlFileName);
-                        ModWriter writer = new SorterXMLModWriter(outFile);
+                        final File outFile = new File(xmlFileName);
+                        final ModWriter writer = new SorterXMLModWriter(outFile);
 
                         writer.writeHeader();
                         writer.writeMods(xmlMods);
@@ -311,10 +317,10 @@ public class ModSorterController implements Observer {
 
                         MessageLogger.log("Successfully updated " + xmlFileName
                                 + " with the data from " + listFileName);
-                    } catch (FileNotFoundException e) {
+                    } catch (final FileNotFoundException e) {
                         MessageLogger.error("Could not find file " + e.getMessage());
                         e.printStackTrace();
-                    } catch (IOException e) {
+                    } catch (final IOException e) {
                         e.printStackTrace();
                     }
                 }); /* thread */
@@ -327,11 +333,11 @@ public class ModSorterController implements Observer {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void update(Observable arg0, Object arg1) {
+    public void update(final Observable arg0, Object arg1) {
         if (arg0 instanceof MessageBuffer) {
             writeMessageList(((MessageBuffer) arg0).getMessages());
         } else if (arg1 instanceof List<?>) {
-            List<?> list = (List<?>) arg1;
+            final List<?> list = (List<?>) arg1;
 
             // Check if the list has Messages. This is the wrong way of doing this
             // since it could be a list of Objects.
@@ -347,9 +353,7 @@ public class ModSorterController implements Observer {
     }
 
     private void writeMessageList(final List<Message> msgBuf) {
-        for (Message msg : msgBuf) {
-            writeMessage(msg);
-        }
+        msgBuf.forEach(this::writeMessage);
     }
 
     private void writeMessage(final Message msg) {

@@ -23,16 +23,16 @@ public class ModListFileReader implements ModFileReader {
     private static final char ExternalChar = '*';
 
     @Override
-    public List<Mod> readFile(String fileName) throws FileNotFoundException {
-        List<Mod> modList = new LinkedList<>();
+    public List<Mod> readFile(final String fileName) throws FileNotFoundException {
+        final List<Mod> modList = new LinkedList<>();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+        try (final BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             // Skip the first line since Mod Organizer leaves a comment on the first
-            // line of its me.mbogo.modsorter.mod list file
+            // line of its mod list file
             br.readLine();
 
             for (String line = br.readLine(); line != null; line = br.readLine()) {
-                Mod mod = new Mod(line.substring(1));
+                final Mod mod = new Mod(line.substring(1));
                 char firstChar = line.charAt(0);
 
                 if (firstChar == EnabledChar)
@@ -46,7 +46,7 @@ public class ModListFileReader implements ModFileReader {
 
                 modList.add(mod);
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }

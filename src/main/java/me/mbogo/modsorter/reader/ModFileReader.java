@@ -6,6 +6,6 @@ import java.io.FileNotFoundException;
 import java.util.List;
 
 public interface ModFileReader {
-    public List<Mod> readFile(String fileName)
+    List<Mod> readFile(final String fileName)
             throws FileNotFoundException;
 }

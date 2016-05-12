@@ -11,11 +11,11 @@ import java.util.Iterator;
 public class SimpleModWriter implements ModWriter {
     protected FileWriter writer;
 
-    public SimpleModWriter(String filePath) throws IOException {
+    public SimpleModWriter(final String filePath) throws IOException {
         writer = new FileWriter(filePath);
     }
 
-    public SimpleModWriter(File file) throws IOException {
+    public SimpleModWriter(final File file) throws IOException {
         writer = new FileWriter(file);
     }
 
@@ -28,18 +28,18 @@ public class SimpleModWriter implements ModWriter {
     }
 
     @Override
-    public void writeMod(Mod mod) throws IOException {
+    public void writeMod(final Mod mod) throws IOException {
         writer.write(mod.getName() + System.lineSeparator());
     }
 
     @Override
-    public void writeMods(Collection<Mod> mods) throws IOException {
+    public void writeMods(final Collection<Mod> mods) throws IOException {
         if (mods == null) {
             writer.write("mods null");
             return;
         }
-        for (Iterator<Mod> iter = mods.iterator(); iter.hasNext(); ) {
-            writeMod(iter.next());
+        for (final Mod mod : mods) {
+            writeMod(mod);
         }
         writer.flush();
     }

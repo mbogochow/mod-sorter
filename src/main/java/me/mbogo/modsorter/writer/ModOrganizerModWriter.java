@@ -12,11 +12,11 @@ public final class ModOrganizerModWriter extends SimpleModWriter {
     private static final String DisabledPrefix = "-";
     private static final String ExternalPrefix = "*";
 
-    public ModOrganizerModWriter(String filePath) throws IOException {
+    public ModOrganizerModWriter(final String filePath) throws IOException {
         super(filePath);
     }
 
-    public ModOrganizerModWriter(File file) throws IOException {
+    public ModOrganizerModWriter(final File file) throws IOException {
         super(file);
     }
 
@@ -27,7 +27,7 @@ public final class ModOrganizerModWriter extends SimpleModWriter {
 
     @Override
     public void writeMod(Mod mod) throws IOException {
-        String prefix = mod.isExternal() ? ExternalPrefix :
+        final String prefix = mod.isExternal() ? ExternalPrefix :
                 mod.isEnabled() ? EnabledPrefix : DisabledPrefix;
 
         writer.write(prefix + mod.getName() + System.lineSeparator());

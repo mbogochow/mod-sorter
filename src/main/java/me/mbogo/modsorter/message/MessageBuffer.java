@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Observable;
 
 public class MessageBuffer extends Observable {
-    private List<Message> messages = new LinkedList<Message>();
+    private final List<Message> messages = new LinkedList<>();
 
     static {
 
@@ -17,23 +17,23 @@ public class MessageBuffer extends Observable {
     }
 
     public List<Message> getMessagesCopy() {
-        List<Message> copy = new LinkedList<>();
+        final List<Message> copy = new LinkedList<>();
         Collections.copy(copy, messages);
         return copy;
     }
 
     /**
-     * Write a me.mbogo.modsorter.message to the me.mbogo.modsorter.message buffer.
+     * Write a message to the message buffer.
      *
-     * @param message the me.mbogo.modsorter.message to write to the me.mbogo.modsorter.message buffer.
+     * @param message the message to write to the message buffer.
      */
-    public void writeMessage(Message message) {
+    public void writeMessage(final Message message) {
         messages.add(message);
         setChanged();
     }
 
     /**
-     * Notify observers with the me.mbogo.modsorter.message buffer.  Clears the me.mbogo.modsorter.message buffer if
+     * Notify observers with the message buffer.  Clears the message buffer if
      * observers were notified.
      */
     @Override
@@ -51,7 +51,7 @@ public class MessageBuffer extends Observable {
      * either case, calls notifyObservers().
      */
     @Override
-    public void notifyObservers(Object arg) {
+    public void notifyObservers(final Object arg) {
         if (arg instanceof Message)
             writeMessage((Message) arg);
 

@@ -14,12 +14,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
 
-public class ModXMLFileReader implements ModFileReader {
-    private MasterModList modList = new MasterModList();
-    private XMLInputFactory factory = XMLInputFactory.newInstance();
+// TODO add entity conversion for Writer
 
+public class ModXMLFileReader implements ModFileReader {
     @Override
-    public List<Mod> readFile(String fileName) throws FileNotFoundException {
+    public List<Mod> readFile(final String fileName) throws FileNotFoundException {
+        final MasterModList modList = new MasterModList();
+        final XMLInputFactory factory = XMLInputFactory.newInstance();
+
         List<Mod> beforeModList = null;
         Mod currMod = null;
         String tagContent = null;
@@ -34,18 +36,18 @@ public class ModXMLFileReader implements ModFileReader {
                     new FileInputStream(fileName)));
 
             while (reader.hasNext()) {
-                int event = reader.next();
+                final int event = reader.next();
 
                 switch (event) {
                     case XMLStreamConstants.START_ELEMENT:
-                        if ("me/mbogo/modsorter/mod".equals(reader.getLocalName())) {
+                        if ("mod".equals(reader.getLocalName())) {
                             currMod = new Mod();
 
-                            String enabled = reader.getAttributeValue(null, "enabled");//me.mbogo.modsorter.reader.getAttributeValue(0);
+                            final String enabled = reader.getAttributeValue(null, "enabled");//reader.getAttributeValue(0);
                             if (enabled != null)
                                 currMod.setEnabled(Boolean.parseBoolean(enabled));
 
-                            String external = reader.getAttributeValue(null, "external");
+                            final String external = reader.getAttributeValue(null, "external");
                             if (external != null)
                                 currMod.setExternal(Boolean.parseBoolean(external));
                         }
@@ -57,45 +59,50 @@ public class ModXMLFileReader implements ModFileReader {
 
                     case XMLStreamConstants.END_ELEMENT:
                         switch (reader.getLocalName()) {
-                            case "me/mbogo/modsorter/mod":
+                            case "mod":
+                                assert currMod != null;
                                 if (modList.contains(currMod))
                                     MessageLogger.error("Duplicate entries found for " + currMod.getName() + ". Sorting results may be unexpected.");
                                 if (!modList.add(currMod))
-                                    MessageLogger.error("Could not add me.mbogo.modsorter.mod " + currMod.getName());
+                                    MessageLogger.error("Could not add mod " + currMod.getName());
                                 break;
                             case "name":
+                                assert currMod != null;
                                 currMod.setName(tagContent);
                                 break;
                         }
                         break;
                 }
             }
-        } catch (XMLStreamException e) {
+        } catch (final XMLStreamException e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
             return null;
         } finally {
             try {
                 if (reader != null)
                     reader.close();
-            } catch (XMLStreamException e) {
+            } catch (final XMLStreamException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
 
-        List<String> invalidMods = Lists.newArrayList();
+        final List<String> invalidMods = Lists.newArrayList();
 
         try {
             reader = factory.createXMLStreamReader(new BufferedInputStream(
                     new FileInputStream(fileName)));
 
             while (reader.hasNext()) {
-                int event = reader.next();
+                final int event = reader.next();
 
                 switch (event) {
                     case XMLStreamConstants.START_ELEMENT:
-                        if ("before".equals(reader.getLocalName()))
+                        if ("before".equals(reader.getLocalName())) {
+                            assert currMod != null;
                             beforeModList = currMod.getBeforeList();
+                        }
                         break;
 
                     case XMLStreamConstants.CHARACTERS:
@@ -105,42 +112,49 @@ public class ModXMLFileReader implements ModFileReader {
                     case XMLStreamConstants.END_ELEMENT:
                         switch (reader.getLocalName()) {
                             case "name":
+                                assert currMod != null;
                                 currMod = modList.getMod(tagContent);
                                 break;
                             case "modName":
+                                assert tagContent != null;
+                                assert beforeModList != null;
                                 if (tagContent.equals(Mod.AllString)) {
                                     beforeModList.add(Mod.AllMod);
                                     break;
                                 }
-                                Mod mod = modList.getMod(tagContent);
+
+                                final Mod mod = modList.getMod(tagContent);
                                 if (mod != null)
                                     beforeModList.add(mod);
-                                else
+                                else {
+                                    assert currMod != null;
                                     invalidMods.add(currMod.getName() + ": " + tagContent);
+                                }
                                 break;
                         }
                         break;
                 }
             }
-        } catch (XMLStreamException e) {
+        } catch (final XMLStreamException e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
             return null;
         } finally {
             try {
                 if (reader != null)
                     reader.close();
-            } catch (XMLStreamException e) {
+            } catch (final XMLStreamException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
 
         if (!invalidMods.isEmpty()) {
-            StringBuilder invalidModMsg = new StringBuilder();
+            final StringBuilder invalidModMsg = new StringBuilder();
 
             invalidModMsg.append("The following are invalid mods").append(System.lineSeparator());
 
-            for (String msg : invalidMods)
+            for (final String msg : invalidMods)
                 invalidModMsg.append(msg).append(System.lineSeparator());
 
             MessageLogger.error(invalidModMsg.toString());

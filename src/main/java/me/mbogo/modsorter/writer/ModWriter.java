@@ -6,13 +6,13 @@ import java.io.IOException;
 import java.util.Collection;
 
 public interface ModWriter {
-    public void writeHeader() throws IOException;
+    void writeHeader() throws IOException;
 
-    public void writeFooter() throws IOException;
+    void writeFooter() throws IOException;
 
-    public void writeMod(Mod mod) throws IOException;
+    void writeMod(Mod mod) throws IOException;
 
-    public void writeMods(Collection<Mod> mods) throws IOException;
+    void writeMods(Collection<Mod> mods) throws IOException;
 
-    public void closeFile() throws IOException;
+    void closeFile() throws IOException;
 }

@@ -9,15 +9,12 @@ import java.util.List;
 public class ModChecker {
     private Mod check;
 
-    public ModChecker(Mod modToCheck) {
+    public ModChecker(final Mod modToCheck) {
         this.check = modToCheck;
     }
 
-    public boolean check(Mod mod) {
-        if (mod == null)
-            return false;
-        List<Mod> writtenMods = Lists.newArrayList();
-        return doChecking(mod, writtenMods);
+    public boolean check(final Mod mod) {
+        return mod != null && doChecking(mod, Lists.newArrayList());
     }
 
     private boolean doChecking(Mod before, List<Mod> checkedMods) {
@@ -32,12 +29,12 @@ public class ModChecker {
         return checkBefore(beforeList, checkedMods);
     }
 
-    private boolean checkBefore(List<Mod> beforeList, List<Mod> checkedMods) {
+    private boolean checkBefore(final List<Mod> beforeList, final List<Mod> checkedMods) {
         boolean result = false;
         for (Mod mod : beforeList) {
             if (mod == null)
                 continue;
-            boolean res = doChecking(mod, checkedMods);
+            final boolean res = doChecking(mod, checkedMods);
             if (res) {
                 MessageLogger.error("LOOP TRACE: " + mod.getName());
             }

@@ -24,19 +24,19 @@ public class Mod // implements Comparable<Mod>
         this.beforeMods = new ArrayList<>();
     }
 
-    public Mod(String name) {
+    public Mod(final String name) {
         this.name = name;
         this.beforeMods = new ArrayList<>();
     }
 
     /**
-     * Construct a Mod with the given name and list of mods which this me.mbogo.modsorter.mod should
+     * Construct a Mod with the given name and list of mods which this mod should
      * be sorted before.
      *
-     * @param name       the name of the me.mbogo.modsorter.mod
-     * @param beforeMods List of mods that this me.mbogo.modsorter.mod should be sorted before
+     * @param name       the name of the mod
+     * @param beforeMods List of mods that this mod should be sorted before
      */
-    public Mod(String name, List<Mod> beforeMods) {
+    public Mod(final String name, final List<Mod> beforeMods) {
         this.name = name;
         this.beforeMods = beforeMods;
     }
@@ -44,20 +44,25 @@ public class Mod // implements Comparable<Mod>
     /**
      * Copy constructor
      *
-     * @param mod me.mbogo.modsorter.mod to copy
+     * @param mod mod to copy
      */
-    public Mod(Mod mod) {
+    public Mod(final Mod mod) {
         copy(mod);
     }
 
-    public void copy(Mod mod) {
+    /**
+     * Shallow copy.
+     *
+     * @param mod mod to copy
+     */
+    public void copy(final Mod mod) {
         this.name = mod.name;
         this.beforeMods = mod.beforeMods;
         this.enabled = mod.enabled;
         this.priority = mod.priority;
     }
 
-    public void setExternal(boolean external) {
+    public void setExternal(final boolean external) {
         this.external = external;
     }
 
@@ -65,7 +70,7 @@ public class Mod // implements Comparable<Mod>
         return external;
     }
 
-    public void setPriority(int priority) {
+    public void setPriority(final int priority) {
         this.priority = priority;
     }
 
@@ -73,7 +78,7 @@ public class Mod // implements Comparable<Mod>
         return priority;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -81,11 +86,11 @@ public class Mod // implements Comparable<Mod>
         return name;
     }
 
-    public void addMod(Mod mod) {
+    public void addMod(final Mod mod) {
         beforeMods.add(mod);
     }
 
-    public void addAllMods(List<Mod> mod) {
+    public void addAllMods(final List<Mod> mod) {
         beforeMods.addAll(mod);
     }
 
@@ -93,20 +98,19 @@ public class Mod // implements Comparable<Mod>
         return beforeMods;
     }
 
-    public void setBeforeList(List<Mod> beforeList) {
+    public void setBeforeList(final List<Mod> beforeList) {
         this.beforeMods = beforeList;
     }
 
-    public void addBeforeMod(Mod mod) {
-        int modIndex = beforeMods.indexOf(mod);
+    public void addBeforeMod(final Mod mod) {
+        final int modIndex = beforeMods.indexOf(mod);
         if (modIndex == -1)
             beforeMods.add(mod);
-
         else
             beforeMods.set(modIndex, mod);
     }
 
-    public void setEnabled(boolean enabled) {
+    public void setEnabled(final boolean enabled) {
         this.enabled = enabled;
     }
 
@@ -115,15 +119,8 @@ public class Mod // implements Comparable<Mod>
     }
 
     @Override
-    public boolean equals(Object other) {
-        boolean areEqual = false;
-
-        if (other instanceof Mod) {
-            if (name.equals(((Mod) other).name))
-                areEqual = true;
-        }
-
-        return areEqual;
+    public boolean equals(final Object other) {
+        return other instanceof Mod && name.equals(((Mod) other).name);
     }
 
     @Override
@@ -139,12 +136,12 @@ public class Mod // implements Comparable<Mod>
      * sort with these three mods.
      */
     @Deprecated
-    public int compareTo(Mod otherMod) {
+    public int compareTo(final Mod otherMod) {
         if (this.equals(otherMod))
             return 0;
 
-        boolean ourAll = this.beforeMods.contains(Mod.AllMod);
-        boolean otherAll = otherMod.beforeMods.contains(Mod.AllMod);
+        final boolean ourAll = this.beforeMods.contains(Mod.AllMod);
+        final boolean otherAll = otherMod.beforeMods.contains(Mod.AllMod);
 
         if (ourAll && !otherAll)
             return -1;
@@ -154,8 +151,8 @@ public class Mod // implements Comparable<Mod>
 
         // Must be that either both are ALL mods or both are not ALL mods
 
-        boolean oursBeforeTheirs = beforeMods.contains(otherMod);
-        boolean theirsBeforeOurs = otherMod.beforeMods.contains(this);
+        final boolean oursBeforeTheirs = beforeMods.contains(otherMod);
+        final boolean theirsBeforeOurs = otherMod.beforeMods.contains(this);
 
         if (oursBeforeTheirs && theirsBeforeOurs)
             throw new IllegalArgumentException();
